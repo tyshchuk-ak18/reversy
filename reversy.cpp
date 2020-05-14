@@ -1,6 +1,7 @@
 ﻿#include <Windows.h>
 #include <string>
 #include <chrono>
+#include "menus.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ short nShade = 0x2588;
 wchar_t* screen = new wchar_t[nScreenWidth * nScreenHeight + 1];
 
 int main() {
+	menus Menus;
 	HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	SetConsoleActiveScreenBuffer(hConsole);
 	DWORD dwBytesWritten = 0;
