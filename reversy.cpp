@@ -3,6 +3,8 @@
 #include <chrono>
 #include <tchar.h>
 #include <strsafe.h>
+
+#include "settings.h"
 #include "menus.h"
 
 using namespace std;

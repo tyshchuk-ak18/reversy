@@ -18,12 +18,12 @@
     <ClCompile Include="reversy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="menus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
