@@ -150,6 +150,7 @@
     <ClCompile Include="reversy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="decoder.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>
