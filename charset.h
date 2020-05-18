@@ -1,7 +1,7 @@
 #include <string>
-class decoder {
+class charset {
 public:
-	int FwSpecChar(char buffer) {
+	int FcSpecChar(char buffer) {
 		int ascii = 0x0;
 		if (buffer == '_') return 95;
 		else if (buffer == '/') return 47;
@@ -10,19 +10,27 @@ public:
 		else if (buffer == '>') return 62;
 		else if (buffer == '<') return 60;
 		else if (buffer == '1') return 92;
+		else if (buffer == '$') return 0;
 		else return ascii;
 	}
-	int FwNumber(wchar_t buffer) {
+	int FcNumber(wchar_t buffer) {
 		int ascii = 0x0;
 		return ascii;
 	}
-	int FwLatin(wchar_t buffer) {
+	int FcLatin(wchar_t buffer) {
 		int ascii = 0x0;
 		return ascii;
 	}
-	int FwCyrillic(wchar_t buffer) {
+	int FcCyrillic(wchar_t buffer) {
 		int ascii = 0x0;
 		return ascii;
+	}
+	int FsShade(int i) {
+		if (i == 1) return 0x2591;
+		else if (i == 2) return 0x2592;
+		else if (i == 3) return 0x2593;
+		else if (i == 4) return 0x2588;
+		else return 0x0;
 	}
 };
 /*
@@ -51,4 +59,9 @@ public:
 	0x92 = \; *(1)
 	0x97 = a, then: lowercase letters;
 	0x124 = vertical line |;
+	0x172 = 
+	0x2588 = shade block (darkest)
+	0x2593 = shade block (darker)
+	0x2592 = shade block (dark)
+	0x2591 = shade block (grey)
 */

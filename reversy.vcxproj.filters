@@ -20,13 +20,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="menus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="decoder.h">
+    <ClInclude Include="charset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,13 +5,15 @@
 #include <strsafe.h>
 
 #include "settings.h"
-#include "menus.h"
-#include "decoder.h"
+#include "charset.h"
 
 using namespace std;
 
 int nScreenWidth = 80;
 int nScreenHeight = 40;
+int nAnimationCount = 0;
+
+float fPrefferedFPS = 10.0f;
 
 float fMinElapsedTime = 1.0f;
 float fMaxElapsedTime = 0.0f;
@@ -32,21 +34,20 @@ void screenfill() {
 }
 
 int main() {
-	menus Menus;
-	decoder Decoder;
+	charset CharSet;
+
+	string sLogo1 = "    ______     ______     __   __   ______     ______     ______     __  __        /1$$==$1   /1$$___1   /1$1 /$/  /1$$___1   /1$$==$1   /1$$___1   /1$1_1$1       1$1$$__<   1$1$$__1   1$1$1`/   1$1$$__1   1$1$$__<   1$1___$$1  1$1____$1       1$1_1$1_1  1$1_____1  1$1_/     1$1_____1  1$1_1$1_1  1/1_____1  1/1_____1       1/_/$/_/   1/_____/   1//       1/_____/   1/_/$/_/   1/_____/   1/_____/   ";
+	/* ______     ______     __   __   ______     ______     ______     __  __
+	  /\  == \   /\  ___\   /\ \ / /  /\  ___\   /\  == \   /\  ___\   /\ \_\ \
+	  \ \  __<   \ \  __\   \ \ \'/   \ \  __\   \ \  __<   \ \___  \  \ \____ \
+	   \ \_\ \_\  \ \_____\  \ \_/     \ \_____\  \ \_\ \_\  \/\_____\  \/\_____\
+		\/_/ /_/   \/_____/   \//       \/_____/   \/_/ /_/   \/_____/   \/_____/ */
 
 	HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	SetConsoleActiveScreenBuffer(hConsole);
 	DWORD dwBytesWritten = 0;
 
 	screenfill();
-
-	string sLogo1 = "    ______     ______     __   __   ______     ______     ______     __  __        /1  == 1   /1  ___1   /1 1 / /  /1  ___1   /1  == 1   /1  ___1   /1 1_1 1       1 1  __<   1 1  __1   1 1 1`/   1 1  __1   1 1  __<   1 1___  1  1 1____ 1       1 1_1 1_1  1 1_____1  1 1_/     1 1_____1  1 1_1 1_1  1/1_____1  1/1_____1       1/_/ /_/   1/_____/   1//       1/_____/   1/_/ /_/   1/_____/   1/_____/   ";
-	/* ______     ______     __   __   ______     ______     ______     __  __    
-	  /\  == \   /\  ___\   /\ \ / /  /\  ___\   /\  == \   /\  ___\   /\ \_\ \   
-	  \ \  __<   \ \  __\   \ \ \'/   \ \  __\   \ \  __<   \ \___  \  \ \____ \  
-	   \ \_\ \_\  \ \_____\  \ \_/     \ \_____\  \ \_\ \_\  \/\_____\  \/\_____\ 
-	    \/_/ /_/   \/_____/   \//       \/_____/   \/_/ /_/   \/_____/   \/_____/ */
 	
 	while(1) {
 		tp2 = chrono::system_clock::now();
@@ -62,20 +63,25 @@ int main() {
 			bCheckKeyState = true;
 		}
 		else bCheckKeyState = false;
+		
+		if (fFPSSync > (1.0f / fPrefferedFPS)) {
+			//nAnimationCount++;
 
-		for (int y = 0; y < nScreenWidth; y++) {
-			for (int x = 0; x < nScreenHeight; x++) {
-				if (x + y * nScreenHeight < (80 * 5)) screen[x + y * nScreenHeight] = Decoder.FwSpecChar(sLogo1[x + y * nScreenHeight]);
-				else screen[x + y * nScreenHeight] = nShade;
+			for (int y = 0; y < nScreenWidth; y++) {
+				for (int x = 0; x < nScreenHeight; x++) {
+					screen[x + y * nScreenHeight] = CharSet.FsShade((x + y * nScreenHeight) % 5);
+					if (x + y * nScreenHeight < (80 * 5) && sLogo1[x + y * nScreenHeight] != ' ') screen[x + y * nScreenHeight] = CharSet.FcSpecChar(sLogo1[x + y * nScreenHeight]);
+					else screen[x + y * nScreenHeight] = nShade;
+				}
 			}
-		}
 
-				
-		screen[nScreenWidth * nScreenHeight] = '\0';
-		if (fFPSSync > 1.0f / 30.0f) {
+
+
+			screen[nScreenWidth * nScreenHeight] = '\0';
 			WriteConsoleOutputCharacter(hConsole, screen, nScreenWidth * nScreenHeight, { 0, 0 }, &dwBytesWritten);
 			fFPSCount = fFPSSync;
 			fFPSSync = 0.0f;
+			//nShade++;
 		}
 		else {
 			fFPSSync += fElapsedTime;
