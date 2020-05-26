@@ -2,7 +2,7 @@
 class charset {
 public:
 	int FcSpecChar(char buffer) {
-		int ascii = 0x0;
+		int ascii = 0;
 		if (buffer == '_') return 95;
 		else if (buffer == '/') return 47;
 		else if (buffer == '`') return 39;
@@ -26,10 +26,13 @@ public:
 		return ascii;
 	}
 	int FsShade(int i) {
-		if (i == 1) return 0x2591;
-		else if (i == 2) return 0x2592;
-		else if (i == 3) return 0x2593;
-		else if (i == 4) return 0x2588;
+		if (i == 1) return 9617;
+		else if (i == 2) return 9618;
+		else if (i == 3) return 9619;
+		else if (i == 4) return 9608;
+		else if (i == 5) return 9619;
+		else if (i == 6) return 9618;
+		else if (i == 7) return 9617;
 		else return 0x0;
 	}
 };
@@ -60,8 +63,9 @@ public:
 	0x97 = a, then: lowercase letters;
 	0x124 = vertical line |;
 	0x172 = 
-	0x2588 = shade block (darkest)
-	0x2593 = shade block (darker)
-	0x2592 = shade block (dark)
-	0x2591 = shade block (grey)
+	0x2588 = shade block (darkest);	9608
+	0x2593 = shade block (darker);	9619
+	0x2592 = shade block (dark);	9618
+	0x2591 = shade block (grey);	9617
+
 */

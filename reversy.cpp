@@ -13,7 +13,7 @@ int nScreenWidth = 80;
 int nScreenHeight = 40;
 int nAnimationCount = 0;
 
-float fPrefferedFPS = 10.0f;
+float fPreferedFPS = 10.0f;//an speed of screen`s refreshing
 
 float fMinElapsedTime = 1.0f;
 float fMaxElapsedTime = 0.0f;
@@ -26,7 +26,7 @@ bool bCheckKeyState = false;
 auto tp1 = chrono::system_clock::now();
 auto tp2 = chrono::system_clock::now();
 
-short nShade = 0x0;
+short nShade = 9600;
 
 wchar_t* screen = new wchar_t[nScreenWidth * nScreenHeight + 1];
 void screenfill() {
@@ -58,20 +58,29 @@ int main() {
 		if (fElapsedTime > fMaxElapsedTime) fMaxElapsedTime = fElapsedTime;
 		
 		if (GetAsyncKeyState(0x41) & 0x8000 || GetAsyncKeyState(0x44) & 0x8000) {
-			if (GetAsyncKeyState(0x41) & 0x8000 && !bCheckKeyState) nShade -= 1;
-			if (GetAsyncKeyState(0x44) & 0x8000 && !bCheckKeyState) nShade += 1;
+			if (GetAsyncKeyState(0x41) & 0x8000 && !bCheckKeyState) nShade += 4;
+			if (GetAsyncKeyState(0x44) & 0x8000 && !bCheckKeyState) nShade -= 4;
 			bCheckKeyState = true;
 		}
 		else bCheckKeyState = false;
 		
-		if (fFPSSync > (1.0f / fPrefferedFPS)) {
-			//nAnimationCount++;
+		if (fFPSSync > (1.0f / fPreferedFPS)) {
+			if (nAnimationCount > 8) nAnimationCount = 0;
+			nAnimationCount++;
 
-			for (int y = 0; y < nScreenWidth; y++) {
-				for (int x = 0; x < nScreenHeight; x++) {
-					screen[x + y * nScreenHeight] = CharSet.FsShade((x + y * nScreenHeight) % 5);
-					if (x + y * nScreenHeight < (80 * 5) && sLogo1[x + y * nScreenHeight] != ' ') screen[x + y * nScreenHeight] = CharSet.FcSpecChar(sLogo1[x + y * nScreenHeight]);
-					else screen[x + y * nScreenHeight] = nShade;
+			for (int y = 0; y < nScreenHeight; y++) {
+				for (int x = 0; x < nScreenWidth; x++) {
+					//animation
+					screen[x + y * nScreenWidth] = CharSet.FsShade((x + y + nAnimationCount) % 9);
+
+					//static
+					//screen[x + y * nScreenWidth] = CharSet.FsShade((x + y) % 10);
+
+					//logo
+					if ((x + y * nScreenHeight) < (nScreenWidth * 5) && (sLogo1[x + y * nScreenHeight] != ' ')) {
+						screen[x + y * nScreenHeight] = CharSet.FcSpecChar(sLogo1[x + y * nScreenHeight]);
+					} //else if ((x + y * nScreenHeight) < (nScreenWidth * 6)) screen[x + y * nScreenHeight] = nShade;
+
 				}
 			}
 
