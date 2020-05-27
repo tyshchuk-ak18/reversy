@@ -13,7 +13,7 @@ int nScreenWidth = 80;
 int nScreenHeight = 40;
 int nAnimationCount = 0;
 
-float fPreferedFPS = 10.0f;//an speed of screen`s refreshing
+float fPreferedFPS = 10.0f;//an speed of screen`s updating
 
 float fMinElapsedTime = 1.0f;
 float fMaxElapsedTime = 0.0f;
@@ -35,7 +35,9 @@ void screenfill() {
 
 int main() {
 	charset CharSet;
+	settings Setting;
 
+	string sMenuButton = "Start";
 	string sLogo1 = "    ______     ______     __   __   ______     ______     ______     __  __        /1$$==$1   /1$$___1   /1$1 /$/  /1$$___1   /1$$==$1   /1$$___1   /1$1_1$1       1$1$$__<   1$1$$__1   1$1$1`/   1$1$$__1   1$1$$__<   1$1___$$1  1$1____$1       1$1_1$1_1  1$1_____1  1$1_/     1$1_____1  1$1_1$1_1  1/1_____1  1/1_____1       1/_/$/_/   1/_____/   1//       1/_____/   1/_/$/_/   1/_____/   1/_____/   ";
 	/* ______     ______     __   __   ______     ______     ______     __  __
 	  /\  == \   /\  ___\   /\ \ / /  /\  ___\   /\  == \   /\  ___\   /\ \_\ \
@@ -64,7 +66,7 @@ int main() {
 		}
 		else bCheckKeyState = false;
 		
-		if (fFPSSync > (1.0f / fPreferedFPS)) {
+		if (fFPSSync > (1.0f / fPreferedFPS)) {//main screen will update every 1 / fPreferedFPS milliseconds
 			if (nAnimationCount > 8) nAnimationCount = 0;
 			nAnimationCount++;
 
@@ -81,6 +83,16 @@ int main() {
 						screen[x + y * nScreenHeight] = CharSet.FcSpecChar(sLogo1[x + y * nScreenHeight]);
 					} //else if ((x + y * nScreenHeight) < (nScreenWidth * 6)) screen[x + y * nScreenHeight] = nShade;
 
+					//1 menu button
+					if (x >= Setting.FnFirstButtonPosX() && x <= Setting.FnFirstButtonPosX() + 6) if (y >= Setting.FnFirstButtonPosY() && y <= Setting.FnFirstButtonPosY() + 2) {
+						if (x == Setting.FnFirstButtonPosX() && y == Setting.FnFirstButtonPosY()) screen[x + y * nScreenWidth] = CharSet.FsBorder(1);
+						if (x == Setting.FnFirstButtonPosX() + 6 && y == Setting.FnFirstButtonPosY()) screen[x + y * nScreenWidth] = CharSet.FsBorder(2);
+						if (x == Setting.FnFirstButtonPosX() + 6 && y == Setting.FnFirstButtonPosY() + 2) screen[x + y * nScreenWidth] = CharSet.FsBorder(3);
+						if (x == Setting.FnFirstButtonPosX() && y == Setting.FnFirstButtonPosY() + 2) screen[x + y * nScreenWidth] = CharSet.FsBorder(4);
+						if (x > Setting.FnFirstButtonPosX() && x < Setting.FnFirstButtonPosX() + 6 && (y == Setting.FnFirstButtonPosY() || y == Setting.FnFirstButtonPosY() + 2)) screen[x + y * nScreenWidth] = CharSet.FsBorder(5);
+						if ((x == Setting.FnFirstButtonPosX() || x == Setting.FnFirstButtonPosX() + 6) && y > Setting.FnFirstButtonPosY() && y < Setting.FnFirstButtonPosY() + 2) screen[x + y * nScreenWidth] = CharSet.FsBorder(6);
+						
+					}
 				}
 			}
 
@@ -90,11 +102,8 @@ int main() {
 			WriteConsoleOutputCharacter(hConsole, screen, nScreenWidth * nScreenHeight, { 0, 0 }, &dwBytesWritten);
 			fFPSCount = fFPSSync;
 			fFPSSync = 0.0f;
-			//nShade++;
 		}
-		else {
-			fFPSSync += fElapsedTime;
-		}
+		else fFPSSync += fElapsedTime;
 
 		TCHAR title[MAX_PATH];
 		StringCchPrintf(title, MAX_PATH, TEXT("FPS = %3.2f | FPS_Max = %3.2f | FPS_Min = %3.2f | FPS_Sync=%3.2f | ASCII Code = %1.0f"), 1.0f / fElapsedTime, 1.0f / fMinElapsedTime, 1.0f / fFPSCount, 1.0f / fMaxElapsedTime, (float)nShade);

@@ -33,7 +33,39 @@ public:
 		else if (i == 5) return 9619;
 		else if (i == 6) return 9618;
 		else if (i == 7) return 9617;
-		else return 0x0;
+		else return 0;
+	}
+	int FsBorder(int i) {
+		switch (i){
+		case 1: {
+			return 9484;// upper left
+			break;
+		}
+		case 2: {
+			return 9488;// upper right
+			break;
+		}
+		case 3: {
+			return 9496;// lower right
+			break;
+		}
+		case 4: {
+			return 9492;// lower left
+			break;
+		}
+		case 5: {
+			return 9472;//horizontal line
+			break;
+		}
+		case 6: {
+			return 9474;//vertical line
+			break;
+		}
+		default: {
+			return 0;
+			break;
+		}
+		}
 	}
 };
 /*
