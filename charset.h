@@ -1,7 +1,7 @@
 #include <string>
 class charset {
 public:
-	int FcSpecChar(char buffer) {
+	int GcSpecChar(char buffer) {
 		int ascii = 0;
 		if (buffer == '_') return 95;
 		else if (buffer == '/') return 47;
@@ -13,30 +13,102 @@ public:
 		else if (buffer == '$') return 0;
 		else return ascii;
 	}
-	int FcNumber(wchar_t buffer) {
+	int GcNumber(wchar_t buffer) {
+		switch (buffer) {
+		case '0': {
+			return 48;
+			break;
+		}
+		case '1': {
+			return 49;
+			break;
+		}
+		case '2': {
+			return 50;
+			break;
+		}
+		case '3': {
+			return 51;
+			break;
+		}
+		case '4': {
+			return 52;
+			break;
+		}
+		case '5': {
+			return 53;
+			break;
+		}
+		case '6': {
+			return 54;
+			break;
+		}
+		case '7': {
+			return 55;
+			break;
+		}
+		case '8': {
+			return 56;
+			break;
+		}
+		case '9': {
+			return 57;
+			break;
+		}
+		default:
+			return 63;
+			break;
+		}
+	}
+	int GcLatin(wchar_t buffer) {
 		int ascii = 0x0;
 		return ascii;
 	}
-	int FcLatin(wchar_t buffer) {
+	int GcCyrillic(wchar_t buffer) {
 		int ascii = 0x0;
 		return ascii;
 	}
-	int FcCyrillic(wchar_t buffer) {
-		int ascii = 0x0;
-		return ascii;
+	int GsShade(int i) {
+		switch (i) {
+		case 0: {
+			return 0;//black
+			break;
+		}
+		case 1: {
+			return 9617;//dark grey
+			break;
+		}
+		case 2: {
+			return 9618;//grey
+			break;
+		}
+		case 3: {
+			return 9619;//light grey
+			break;
+		}
+		case 4: {
+			return 9608;//white
+			break;
+		}
+		case 5: {
+			return 9619;//light grey
+			break;
+		}
+		case 6: {
+			return 9618;//grey
+			break;
+		}
+		case 7: {
+			return 9617;//dark grey
+			break;
+		}
+		default:
+			return 63;//error
+			break;
+		}
 	}
-	int FsShade(int i) {
-		if (i == 1) return 9617;
-		else if (i == 2) return 9618;
-		else if (i == 3) return 9619;
-		else if (i == 4) return 9608;
-		else if (i == 5) return 9619;
-		else if (i == 6) return 9618;
-		else if (i == 7) return 9617;
-		else return 0;
-	}
-	int FsBorder(int i) {
-		switch (i){
+	int GsBorder(int i) {
+		switch (i) {
 		case 1: {
 			return 9484;// upper left
 			break;
@@ -94,7 +166,6 @@ public:
 	0x92 = \; *(1)
 	0x97 = a, then: lowercase letters;
 	0x124 = vertical line |;
-	0x172 = 
 	0x2588 = shade block (darkest);	9608
 	0x2593 = shade block (darker);	9619
 	0x2592 = shade block (dark);	9618
