@@ -14,7 +14,7 @@ int nScreenHeight = 40;
 int nAnimationCount = 0;
 int nSelectedButton = 0;
 
-float fPreferedFPS = 10.0f;//an speed of screen`s updating
+float fPreferedFPS = 30.0f;//an speed of screen`s updating
 
 float fMinElapsedTime = 1.0f;
 float fMaxElapsedTime = 0.0f;
@@ -92,6 +92,10 @@ int main() {
 					}
 
 					//borders
+					if (x == 0 && y == 0) screen[0] = CharSet.GsBorder(7);
+					if (x == nScreenWidth - 1 && y == 0) screen[nScreenWidth - 1] = CharSet.GsBorder(8);
+					if (x == nScreenWidth - 1 && y == nScreenHeight - 1) screen[nScreenHeight * nScreenWidth - 1] = CharSet.GsBorder(9);
+					if (x == 0 && y == nScreenHeight - 1) screen[(nScreenHeight - 1) * nScreenWidth] = CharSet.GsBorder(10);
 
 					//1 menu button
 					if (x >= Setting.GnFBPX() && x <= Setting.GnFBPX() + 6) if (y >= Setting.GnFBPY() && y <= Setting.GnFBPY() + 2) {
@@ -105,8 +109,6 @@ int main() {
 					}
 				}
 			}
-
-
 
 			screen[nScreenWidth * nScreenHeight] = '\0';
 			WriteConsoleOutputCharacter(hConsole, screen, nScreenWidth * nScreenHeight, { 0, 0 }, &dwBytesWritten);

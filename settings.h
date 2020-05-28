@@ -5,7 +5,7 @@ private:
 	int nLogoPosX = 2;
 	int nLogoPosY = 2;
 
-	bool bEnableAnimation = false;
+	bool bEnableAnimation = true;
 public:
 	int GnFBPX() {
 		return nFirstButtonPosX;

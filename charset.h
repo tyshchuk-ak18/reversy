@@ -110,27 +110,43 @@ public:
 	int GsBorder(int i) {
 		switch (i) {
 		case 1: {
-			return 9484;// upper left
+			return 9484;// upper left slim
 			break;
 		}
 		case 2: {
-			return 9488;// upper right
+			return 9488;// upper right slim
 			break;
 		}
 		case 3: {
-			return 9496;// lower right
+			return 9496;// lower right slim
 			break;
 		}
 		case 4: {
-			return 9492;// lower left
+			return 9492;// lower left slim
 			break;
 		}
 		case 5: {
-			return 9472;//horizontal line
+			return 9472;//horizontal line slim
 			break;
 		}
 		case 6: {
-			return 9474;//vertical line
+			return 9474;//vertical line slim
+			break;
+		}
+		case 7: {
+			return 9556;//upper left thick
+			break;
+		}
+		case 8: {
+			return 9559;//upper right thick
+			break;
+		}
+		case 9: {
+			return 9565;//lower right thick
+			break;
+		}
+		case 10: {
+			return 9562;//lower left thick
 			break;
 		}
 		default: {
