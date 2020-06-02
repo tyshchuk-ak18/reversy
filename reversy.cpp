@@ -13,7 +13,7 @@ int nScreenWidth = 80;
 int nScreenHeight = 40;
 int nAnimationCount = 0;
 int nSelectedButton = 0;
-const int nMenuButtons = 2;
+const int nMenuButtons = 3;
 
 float fPreferedFPS = 30.0f;//an speed of screen`s updating
 
@@ -93,12 +93,22 @@ int main() {
 				}
 			}
 			if (GetAsyncKeyState(0x44) & 0x8000 && !bCheckKeyState) nShade += 4;//d
-			if (GetAsyncKeyState(0x45) & 0x8000 && !bCheckKeyState) nShade += 4;//e
+			if (GetAsyncKeyState(0x45) & 0x8000 && !bCheckKeyState) {//e
+				if (bCheckedMenuButton[0]) {
+					//
+				}
+				if (bCheckedMenuButton[1]) {
+					Setting.SbEAToggle();
+				}
+				if (bCheckedMenuButton[2]) {
+					return 0;
+				}
+			}
 			bCheckKeyState = true;
 		}
 		else bCheckKeyState = false;
 		
-		if (fFPSSync > (1.0f / fPreferedFPS)) {//main screen will update every 1 / fPreferedFPS milliseconds
+		if (fFPSSync > (1.0f / fPreferedFPS)) {//main screen will update every (1 / fPreferedFPS) milliseconds
 			if (nAnimationCount > 7) nAnimationCount = 0;
 			if (Setting.GbEA()) nAnimationCount++;
 
@@ -136,35 +146,53 @@ int main() {
 
 					//start menu button
 					if (x >= Setting.GnSMBPX() && x <= Setting.GnSMBPX() + Setting.GnSMBL()) if (y >= Setting.GnSMBPY() && y <= Setting.GnSMBPY() + 2) {
-						if (!bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//uncheked
-						if (!bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
-						if (!bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
-						if (!bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
-						if (!bCheckedMenuButton[0]) if (x > Setting.GnSMBPX() && x < Setting.GnSMBPX() + Setting.GnSMBL() && (y == Setting.GnSMBPY() || y == Setting.GnSMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
-						if (!bCheckedMenuButton[0]) if ((x == Setting.GnSMBPX() || x == Setting.GnSMBPX() + Setting.GnSMBL()) && y > Setting.GnSMBPY() && y < Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
-						if (bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(4);//checked
-						if (bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[0]) if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[0]) if (x > Setting.GnSMBPX() && x < Setting.GnSMBPX() + Setting.GnSMBL() && (y == Setting.GnSMBPY() || y == Setting.GnSMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[0]) if ((x == Setting.GnSMBPX() || x == Setting.GnSMBPX() + Setting.GnSMBL()) && y > Setting.GnSMBPY() && y < Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
+						if (bCheckedMenuButton[0]) {//cheked
+							if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//uncheked
+							if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+							if (x == Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+							if (x == Setting.GnSMBPX() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+							if (x > Setting.GnSMBPX() && x < Setting.GnSMBPX() + Setting.GnSMBL() && (y == Setting.GnSMBPY() || y == Setting.GnSMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+							if ((x == Setting.GnSMBPX() || x == Setting.GnSMBPX() + Setting.GnSMBL()) && y > Setting.GnSMBPY() && y < Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						} else {//uncheked
+							if (x >= Setting.GnSMBPX() && x <= Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if ((x == Setting.GnSMBPX() || x == Setting.GnSMBPX() + Setting.GnSMBL()) && y == Setting.GnSMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if (x >= Setting.GnSMBPX() && x <= Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+						}
 						if (x > Setting.GnSMBPX() && x < Setting.GnSMBPX() + Setting.GnSMBL() && y == Setting.GnSMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GcLatin(sStartMenuButton[x - Setting.GnSMBPX() - 1]);//text
 					}
 
+					//settings menu button
+					if (x >= Setting.GnSnMBPX() && x <= Setting.GnSnMBPX() + Setting.GnSnMBL()) if (y >= Setting.GnSnMBPY() && y <= Setting.GnSnMBPY() + 2) {
+						if (bCheckedMenuButton[1]) {//cheked
+							if (x == Setting.GnSnMBPX() && y == Setting.GnSnMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//uncheked
+							if (x == Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+							if (x == Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+							if (x == Setting.GnSnMBPX() && y == Setting.GnSnMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+							if (x > Setting.GnSnMBPX() && x < Setting.GnSnMBPX() + Setting.GnSnMBL() && (y == Setting.GnSnMBPY() || y == Setting.GnSnMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+							if ((x == Setting.GnSnMBPX() || x == Setting.GnSnMBPX() + Setting.GnSnMBL()) && y > Setting.GnSnMBPY() && y < Setting.GnSnMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						} else {//unchecked
+							if (x >= Setting.GnSnMBPX() && x <= Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if ((x == Setting.GnSnMBPX() || x == Setting.GnSnMBPX() + Setting.GnSnMBL()) && y == Setting.GnSnMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if (x >= Setting.GnSnMBPX() && x <= Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+						}
+						if (x > Setting.GnSnMBPX() && x < Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GcLatin(sSettingsMenuButton[x - Setting.GnSnMBPX() - 1]);//text
+					}
+
+
 					//exit menu button
 					if (x >= Setting.GnEMBPX() && x <= Setting.GnEMBPX() + Setting.GnEMBL()) if (y >= Setting.GnEMBPY() && y <= Setting.GnEMBPY() + 2) {
-						if (!bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//unchecked
-						if (!bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
-						if (!bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
-						if (!bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
-						if (!bCheckedMenuButton[1]) if (x > Setting.GnEMBPX() && x < Setting.GnEMBPX() + Setting.GnEMBL() && (y == Setting.GnEMBPY() || y == Setting.GnEMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
-						if (!bCheckedMenuButton[1]) if ((x == Setting.GnEMBPX() || x == Setting.GnEMBPX() + Setting.GnEMBL()) && y > Setting.GnEMBPY() && y < Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
-						if (bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(4);//checked
-						if (bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[1]) if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[1]) if (x > Setting.GnEMBPX() && x < Setting.GnEMBPX() + Setting.GnEMBL() && (y == Setting.GnEMBPY() || y == Setting.GnEMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
-						if (bCheckedMenuButton[1]) if ((x == Setting.GnEMBPX() || x == Setting.GnEMBPX() + Setting.GnEMBL()) && y > Setting.GnEMBPY() && y < Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
+						if (bCheckedMenuButton[2]) {//checked
+							if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
+							if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+							if (x == Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+							if (x == Setting.GnEMBPX() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+							if (x > Setting.GnEMBPX() && x < Setting.GnEMBPX() + Setting.GnEMBL() && (y == Setting.GnEMBPY() || y == Setting.GnEMBPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+							if ((x == Setting.GnEMBPX() || x == Setting.GnEMBPX() + Setting.GnEMBL()) && y > Setting.GnEMBPY() && y < Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						} else {//unchecked
+							if (x >= Setting.GnEMBPX() && x <= Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY()) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if ((x == Setting.GnEMBPX() || x == Setting.GnEMBPX() + Setting.GnEMBL()) && y == Setting.GnEMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+							if (x >= Setting.GnEMBPX() && x <= Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
+						}
 						if (x > Setting.GnEMBPX() && x < Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GcLatin(sExitMenuButton[x - Setting.GnEMBPX() - 1]);//text
 					}
 				}
