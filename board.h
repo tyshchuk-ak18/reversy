@@ -9,7 +9,7 @@ public:
 		return nBoardSize;
 	}
 	int GnBU(int x, int y) {
-		return nBoard[x][y];
+		return nBoard[y][x];
 	}
 	void vBoardReset() {//1-black; 2-white; 3-available to set
 		for (int i = 0; i < nBoardSize; i++) nBoard[i] = new int[nBoardSize];
@@ -19,6 +19,10 @@ public:
 		nBoard[4][3] = 2;
 		nBoard[4][4] = 1;
 		nBoard[0][1] = 3;
+		bTurn = true;
+	}
+	void vClearMem() {
+		for (int i = 0; i < nBoardSize; i++) delete[] nBoard[i];
 	}
 	void SnBU(int x, int y) {
 		bool i = true;

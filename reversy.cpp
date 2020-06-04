@@ -181,7 +181,15 @@ int main() {
 				
 			}
 			if (GetAsyncKeyState(0x51) & 0x8000 && !bCheckKeyState) {//q
-				nAction = 1;
+				switch (nAction)
+				{
+				case 2: {
+					nAction = 1;
+					Board.vClearMem();
+					break;
+				}
+				default: break;
+				}
 			}
 			bCheckKeyState = true;
 		}
@@ -287,10 +295,10 @@ int main() {
 						if ((x - Setting.GnBPX()) % 2 == 0 && (y - Setting.GnBPY()) % 2 == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
 						if (x > Setting.GnBPX() && x < Setting.GnBPX() + Board.GnBS() * 2 && (x - Setting.GnBPX()) % 2 == 0 && y > Setting.GnBPY() && y < Setting.GnBPY() + Board.GnBS() * 2 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(25);
-						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 0) screen[x + y * nScreenWidth] = 0;
-						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 1) screen[x + y * nScreenWidth] = 1;
-						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 2) screen[x + y * nScreenWidth] = 2;
-						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 3) screen[x + y * nScreenWidth] = 7;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 0) screen[x + y * nScreenWidth] = 0;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 1) screen[x + y * nScreenWidth] = 1;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 2) screen[x + y * nScreenWidth] = 2;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 3) screen[x + y * nScreenWidth] = 7;
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && nSelectedBoardPos[0] == (x - Setting.GnBPX()) / 2 && nSelectedBoardPos[1] == (y - Setting.GnBPY()) / 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
 					}
 				}
