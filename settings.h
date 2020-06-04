@@ -1,9 +1,10 @@
 class settings {
 private:
-	int nStartMenuButton[3] = { 5, 15, 6 };
-	int nSettingsMenuButton[3] = { 5, 19, 9 };
-	int nExitMenuButton[3] = { 5, 23, 5 };
+	int nStartMenuButton[3] = { 2, 12, 6 };
+	int nSettingsMenuButton[3] = { 2, 16, 9 };
+	int nExitMenuButton[3] = { 2, 20, 5 };
 	int nLogoPos[2] = { 2, 2 };
+	int nBoardPos[2] = { 60, 11 };
 
 	bool bEnableAnimation = true;
 
@@ -43,6 +44,13 @@ public:
 	}
 	int GnLPY() {
 		return nLogoPos[1];
+	}
+
+	int GnBPX() {
+		return nBoardPos[0];
+	}
+	int GnBPY() {
+		return nBoardPos[1];
 	}
 
 	bool GbEA() {

@@ -6,16 +6,21 @@
 
 #include "settings.h"
 #include "charset.h"
+#include "board.h"
 
 using namespace std;
+
+
+const int nMenuButtons = 3;
 
 int nScreenWidth = 80;
 int nScreenHeight = 40;
 int nAnimationCount = 0;
 int nSelectedButton = 0;
-const int nMenuButtons = 3;
+int nSelectedBoardPos[2];
+int nAction;//1-start menu; 2-game starts; 3-game ends; 4-settings menu
 
-float fPreferedFPS = 30.0f;//an speed of screen`s updating
+float fPreferedFPS = 15.0f;//screen updating speed
 
 float fMinElapsedTime = 1.0f;
 float fMaxElapsedTime = 0.0f;
@@ -25,29 +30,38 @@ float fFPSCount = 0.0f;
 
 bool bCheckKeyState = false;
 bool bCheckedMenuButton[nMenuButtons];
-void uncheckmenubuttons() {
-	for (int i = 0; i < nMenuButtons; i++){
-		bCheckedMenuButton[i] = false;
-	}
-}
+
 
 auto tp1 = chrono::system_clock::now();
 auto tp2 = chrono::system_clock::now();
 
-short nShade = 9600;
+short nShade = 1;
 
 wchar_t* screen = new wchar_t[nScreenWidth * nScreenHeight + 1];
+
 void screenfill() {
 	for (int i = 0; i < nScreenWidth * nScreenHeight + 1; i++) screen[i] = 0;
 }
 
+void startaction() {
+	for (int i = 0; i < nMenuButtons; i++) bCheckedMenuButton[i] = false;
+	nSelectedBoardPos[0] = 0;
+	nSelectedBoardPos[1] = 0;
+	nAction = 1;
+	bCheckedMenuButton[0] = true;
+}
+
+
 int main() {
 	charset CharSet;
 	settings Setting;
+	board Board;
 
 	string sStartMenuButton = "Start";
 	string sSettingsMenuButton = "Settings";
-	string sExitMenuButton = "Exit";
+	string sExitMenuButton = "Quit";
+	string sFirstLoad = "Press E";
+
 	string sLogo1 = " $______$   $______$   $__$ $__$$______$   $______$   $______$   $__$$__$   ";
 	string sLogo2 = "$/1$$==$1$ $/1$$___1$ $/1$1$/$/$/1$$___1$ $/1$$==$1$ $/1$$___1$ $/1$1_1$1$  ";
 	string sLogo3 = "$1$1$$__<$$$1$1$$__1$$$1$1$1`/$$1$1$$__1$$$1$1$$__<$$$1$1___$$1$$1$1____$1$ ";
@@ -59,9 +73,9 @@ int main() {
 	SetConsoleActiveScreenBuffer(hConsole);
 	DWORD dwBytesWritten = 0;
 
+	//start parametres
 	screenfill();
-	uncheckmenubuttons();
-	bCheckedMenuButton[0] = true;
+	startaction();
 	
 	while(1) {
 		tp2 = chrono::system_clock::now();
@@ -72,37 +86,102 @@ int main() {
 		if (fElapsedTime > fMaxElapsedTime) fMaxElapsedTime = fElapsedTime;
 		
 		if (GetAsyncKeyState(0x41) & 0x8000 || GetAsyncKeyState(0x44) & 0x8000 || GetAsyncKeyState(0x45) & 0x8000 || GetAsyncKeyState(0x51) & 0x8000 || GetAsyncKeyState(0x53) & 0x8000 || GetAsyncKeyState(0x57) & 0x8000) {
-			if (GetAsyncKeyState(0x53) & 0x8000 && !bCheckKeyState) {//s
-				for (int i = 0; i < nMenuButtons; i++) {
-					if (bCheckedMenuButton[i]) {
-						bCheckedMenuButton[i] = false;
-						bCheckedMenuButton[(i + 1) % nMenuButtons] = true;
-						break;
-					}
-				}
-			}
-			if (GetAsyncKeyState(0x41) & 0x8000 && !bCheckKeyState) nShade -= 4;//a
-			if (GetAsyncKeyState(0x51) & 0x8000 && !bCheckKeyState) nShade -= 4;//q
 			if (GetAsyncKeyState(0x57) & 0x8000 && !bCheckKeyState) {//w
-				for (int i = 0; i < nMenuButtons; i++) {
-					if (bCheckedMenuButton[i]) {
-						bCheckedMenuButton[i] = false;
-						bCheckedMenuButton[(i + nMenuButtons - 1) % nMenuButtons] = true;
-						break;
+				switch (nAction)
+				{
+				case 1: {
+					for (int i = 0; i < nMenuButtons; i++) {
+						if (bCheckedMenuButton[i]) {
+							bCheckedMenuButton[i] = false;
+							bCheckedMenuButton[(i + nMenuButtons - 1) % nMenuButtons] = true;
+							break;
+						}
 					}
 				}
+				case 2: {
+					if (nSelectedBoardPos[1] > 0) nSelectedBoardPos[1]--;
+					break;
+				}
+				default: break;
+				}
+
 			}
-			if (GetAsyncKeyState(0x44) & 0x8000 && !bCheckKeyState) nShade += 4;//d
+			if (GetAsyncKeyState(0x53) & 0x8000 && !bCheckKeyState) {//s
+				switch (nAction)
+				{
+				case 1: {
+					for (int i = 0; i < nMenuButtons; i++) {
+						if (bCheckedMenuButton[i]) {
+							bCheckedMenuButton[i] = false;
+							bCheckedMenuButton[(i + 1) % nMenuButtons] = true;
+							break;
+						}
+					}
+				}
+				case 2: {
+					if (nSelectedBoardPos[1] < Board.GnBS() - 1) nSelectedBoardPos[1]++;
+					break;
+				}
+				default: break;
+				}
+				
+			}
+			if (GetAsyncKeyState(0x41) & 0x8000 && !bCheckKeyState) {//a
+				switch (nAction)
+				{
+				case 2: {
+					if (nSelectedBoardPos[0] > 0) nSelectedBoardPos[0]--;
+					break;
+				}
+				default: break;
+				}
+			}
+			if (GetAsyncKeyState(0x44) & 0x8000 && !bCheckKeyState) {//d
+				switch (nAction)
+				{
+				case 2: {
+					if (nSelectedBoardPos[0] < Board.GnBS() - 1) nSelectedBoardPos[0]++;
+					break;
+				}
+				default: break;
+				}
+			}
 			if (GetAsyncKeyState(0x45) & 0x8000 && !bCheckKeyState) {//e
-				if (bCheckedMenuButton[0]) {
-					//
+				switch (nAction)
+				{
+				case 1: {//start menu
+					if (bCheckedMenuButton[0]) {
+						Board.vBoardReset();
+						nSelectedBoardPos[0] = 0;
+						nSelectedBoardPos[1] = 0;
+						nAction = 2;
+					}
+					if (bCheckedMenuButton[1]) {
+						Setting.SbEAToggle();
+					}
+					if (bCheckedMenuButton[2]) {
+						return 0;
+					}
+					break;
 				}
-				if (bCheckedMenuButton[1]) {
-					Setting.SbEAToggle();
+				case 2: {//game starts
+					Board.SnBU(nSelectedBoardPos[0], nSelectedBoardPos[1]);
+					break;
 				}
-				if (bCheckedMenuButton[2]) {
-					return 0;
+				case 3: {//game ends
+
+					break;
 				}
+				case 4: {//settings menu
+
+					break;
+				}
+				default: break;//first load
+				}
+				
+			}
+			if (GetAsyncKeyState(0x51) & 0x8000 && !bCheckKeyState) {//q
+				nAction = 1;
 			}
 			bCheckKeyState = true;
 		}
@@ -178,7 +257,6 @@ int main() {
 						if (x > Setting.GnSnMBPX() && x < Setting.GnSnMBPX() + Setting.GnSnMBL() && y == Setting.GnSnMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GcLatin(sSettingsMenuButton[x - Setting.GnSnMBPX() - 1]);//text
 					}
 
-
 					//exit menu button
 					if (x >= Setting.GnEMBPX() && x <= Setting.GnEMBPX() + Setting.GnEMBL()) if (y >= Setting.GnEMBPY() && y <= Setting.GnEMBPY() + 2) {
 						if (bCheckedMenuButton[2]) {//checked
@@ -194,6 +272,26 @@ int main() {
 							if (x >= Setting.GnEMBPX() && x <= Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsShade(0);
 						}
 						if (x > Setting.GnEMBPX() && x < Setting.GnEMBPX() + Setting.GnEMBL() && y == Setting.GnEMBPY() + 1) screen[x + y * nScreenWidth] = CharSet.GcLatin(sExitMenuButton[x - Setting.GnEMBPX() - 1]);//text
+					}
+
+					//board
+					if (nAction == 2) if (x >= Setting.GnBPX() && x <= Setting.GnBPX() + Board.GnBS() * 2) if (y >= Setting.GnBPY() && y <= Setting.GnBPY() + Board.GnBS() * 2) {
+						if (x == Setting.GnBPX() && y == Setting.GnBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
+						if (x == Setting.GnBPX() + Board.GnBS() * 2 && y == Setting.GnBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+						if (x == Setting.GnBPX() + Board.GnBS() * 2 && y == Setting.GnBPY() + Board.GnBS() * 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+						if (x == Setting.GnBPX() && y == Setting.GnBPY() + Board.GnBS() * 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+						if (x > Setting.GnBPX() && x < Setting.GnBPX() + Board.GnBS() * 2 && (x - Setting.GnBPX()) % 2 == 0 && y == Setting.GnBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(22);
+						if (x == Setting.GnBPX() && y > Setting.GnBPY() && y < Setting.GnBPY() + Board.GnBS() * 2 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(24);
+						if (x == Setting.GnBPX() + Board.GnBS() * 2 && y > Setting.GnBPY() && y < Setting.GnBPY() + Board.GnBS() * 2 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(23);
+						if (x > Setting.GnBPX() && x < Setting.GnBPX() + Board.GnBS() * 2 && (x - Setting.GnBPX()) % 2 == 0 && y == Setting.GnBPY() + Board.GnBS() * 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(21);
+						if ((x - Setting.GnBPX()) % 2 == 0 && (y - Setting.GnBPY()) % 2 == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+						if (x > Setting.GnBPX() && x < Setting.GnBPX() + Board.GnBS() * 2 && (x - Setting.GnBPX()) % 2 == 0 && y > Setting.GnBPY() && y < Setting.GnBPY() + Board.GnBS() * 2 && (y - Setting.GnBPY()) % 2 == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(25);
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 0) screen[x + y * nScreenWidth] = 0;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 1) screen[x + y * nScreenWidth] = 1;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 2) screen[x + y * nScreenWidth] = 2;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((y - Setting.GnBPY()) / 2, (x - Setting.GnBPX()) / 2) == 3) screen[x + y * nScreenWidth] = 7;
+						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && nSelectedBoardPos[0] == (x - Setting.GnBPX()) / 2 && nSelectedBoardPos[1] == (y - Setting.GnBPY()) / 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
 					}
 				}
 			}
@@ -213,17 +311,7 @@ int main() {
 }
 
 /*
+
 swprintf(screen, 80, L"FPS=%3.2f FPS_Max=%3.2f FPS_Min=%3.2f Hesh=%1.0f", 1.0f / fElapsedTime, 1.0f / fMinElapsedTime, 1.0f / fMaxElapsedTime, (float)nShade);
-
-------------------------------------------------
-
-for (int y = 0; y < nScreenWidth; y++) {
-	for (int x = 0; x < nScreenHeight; x++) {
-		screen[x + y * nScreenHeight] = nShade;
-	}
-}
-
-------------------------------------------------
-
 
 */
