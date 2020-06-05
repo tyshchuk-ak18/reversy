@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 const int nMenuButtons = 3;
 
 int nScreenWidth = 80;
@@ -55,12 +54,13 @@ void startaction() {
 int main() {
 	charset CharSet;
 	settings Setting;
-	board Board;
+	boardlogic Board;
 
 	string sStartMenuButton = "Start";
 	string sSettingsMenuButton = "Settings";
 	string sExitMenuButton = "Quit";
 	string sFirstLoad = "Press E";
+	string sScore = "Black  $White  ";
 
 	string sLogo1 = " $______$   $______$   $__$ $__$$______$   $______$   $______$   $__$$__$   ";
 	string sLogo2 = "$/1$$==$1$ $/1$$___1$ $/1$1$/$/$/1$$___1$ $/1$$==$1$ $/1$$___1$ $/1$1_1$1$  ";
@@ -300,6 +300,23 @@ int main() {
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 2) screen[x + y * nScreenWidth] = 2;
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 3) screen[x + y * nScreenWidth] = 7;
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && nSelectedBoardPos[0] == (x - Setting.GnBPX()) / 2 && nSelectedBoardPos[1] == (y - Setting.GnBPY()) / 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
+					}
+
+					//score
+					if (nAction == 2) if (x >= Setting.GnSPX() && x <= Setting.GnSPX() + Setting.GnSL()) if (y >= Setting.GnSPY() && y <= Setting.GnSPY() + 2) {
+						if (x == Setting.GnSPX() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
+						if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+						if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+						if (x == Setting.GnSPX() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+						if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+						if ((x == Setting.GnSPX() || x == Setting.GnSPX() + Setting.GnSL()) && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 1) if (sScore[x - Setting.GnSPX() - 1] != ' ') screen[x + y * nScreenWidth] = CharSet.GcLatin(sScore[x - Setting.GnSPX() - 1]);
+						if (y == Setting.GnSPY() + 1) {
+							if (x == Setting.GnSPX() + 6) screen[x + y * nScreenWidth] = (Board.GnBUA() - Board.GnBUA() % 10) / 10 + 48;
+							if (x == Setting.GnSPX() + 7) screen[x + y * nScreenWidth] = Board.GnBUA() % 10 + 48;
+							if (x == Setting.GnSPX() + 14) screen[x + y * nScreenWidth] = (Board.GnWUA() - Board.GnWUA() % 10) / 10 + 48;
+							if (x == Setting.GnSPX() + 15) screen[x + y * nScreenWidth] = Board.GnWUA() % 10 + 48;
+						}
 					}
 				}
 			}
