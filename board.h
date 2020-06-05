@@ -29,7 +29,7 @@ public:
 		board[4][3] = 2;
 		board[4][4] = 1;
 		bTurn = true;
-		vCheckAvailablePlace();
+		vCheckAvailablePlace(false);
 	}
 	void vClearMem() {
 		for (int i = 0; i < nBoardSize; i++) delete[] board[i];
@@ -37,24 +37,77 @@ public:
 
 	void SnBU(int x, int y) {
 		bool i = true;
-		if (bTurn && i && board[y][x] == 3) {
+		if (bTurn && i && board[y][x] == 3) {//set black
+			vFlipUnits(x, y);
 			bTurn = false;
-			board[y][x] = 1;
 			i = false;
 		}
-		if (!bTurn && i && board[y][x] == 3) {
+		if (!bTurn && i && board[y][x] == 3) {// set white
+			vFlipUnits(x, y);
 			bTurn = true;
-			board[y][x] = 2;
 			i = false;
 		}
-		vCheckAvailablePlace();
+		vCheckAvailablePlace(false);
 	}
 
-	void vFlipUnits() {
-
+	void vFlipUnits(int x, int y) {
+		if (bTurn) {
+			board[y][x] = 1;
+			if (board[y][x + 1] == 2 && x < nBoardSize - 2) {
+				for (int i1 = x + 1; i1 < nBoardSize; i1++) {
+					if (board[y][i1 + 1] == 1) {
+						for (int i2 = i1; i2 > x; i2--) board[y][i2] = 1;
+						break;
+					}
+					if (board[y][i1 + 1] == 0 || board[y][i1 + 1] == 3) break;
+				}
+			}
+			if (board[y][x + 1] == 2 && x == nBoardSize - 2) {
+				if (board[y][x + 2] == 1) board[y][x + 1] = 1;
+			}
+			if (board[y + 1][x] == 2 && y < nBoardSize - 2) {
+				for (int i1 = y + 1; i1 < nBoardSize; i1++) {
+					if (board[i1 + 1][x] == 1) {
+						for (int i2 = i1; i2 > y; i2--) board[i2][x] = 1;
+						break;
+					}
+					if (board[i1 + 1][x] == 0 || board[i1 + 1][x] == 3) break;
+				}
+			}
+			if (board[y + 1][x] == 2 && y == nBoardSize - 2) {
+				if (board[y + 2][x] == 1) board[y + 1][x] = 1;
+			}
+		}
+		if (!bTurn) {
+			board[y][x] = 2;
+			if (board[y][x + 1] == 1 && x < nBoardSize - 2) {
+				for (int i1 = x + 1; i1 < nBoardSize; i1++) {
+					if (board[y][i1 + 1] == 2) {
+						for (int i2 = i1; i2 > x; i2--) board[y][i2] = 2;
+						break;
+					}
+					if (board[y][i1 + 1] == 0 || board[y][i1 + 1] == 3) break;
+				}
+			}
+			if (board[y][x + 1] == 1 && x == nBoardSize - 2) {
+				if (board[y][x + 2] == 2) board[y][x + 1] = 2;
+			}
+			if (board[y + 1][x] == 1 && y < nBoardSize - 2) {
+				for (int i1 = y + 1; i1 < nBoardSize; i1++) {
+					if (board[i1 + 1][x] == 2) {
+						for (int i2 = i1; i2 > y; i2--) board[i2][x] = 2;
+						break;
+					}
+					if (board[i1 + 1][x] == 0 || board[i1 + 1][x] == 3) break;
+				}
+			}
+			if (board[y + 1][x] == 1 && y == nBoardSize - 2) {
+				if (board[y + 2][x] == 2) board[y + 1][x] = 2;
+			}
+		}
 	}
 
-	void vCheckAvailablePlace() {
+	void vCheckAvailablePlace(bool secondcheck) {
 		nUnitsAmount[0] = 0;
 		nUnitsAmount[1] = 0;
 		for (int j = 0; j < nBoardSize; j++) for (int i = 0; i < nBoardSize; i++) {
@@ -71,50 +124,50 @@ public:
 				}
 			}
 
-			for (int i = x + 1; i < nBoardSize - 2 && board[y][i] == 2; i++) {//search for last another to right
+			for (int i = x + 1; i < nBoardSize && board[y][i] == 2; i++) {//search for last another to right
 				if (board[y][i + 1] == 0) {
 					board[y][i + 1] = 3;
 					break;
 				}
 			}
-			for (int i = x - 1; i > 2 && board[y][i] == 2; i--) {//search for last another to left
+			for (int i = x - 1; i > 0 && board[y][i] == 2; i--) {//search for last another to left
 				if (board[y][i - 1] == 0) {
 					board[y][i - 1] = 3;
 					break;
 				}
 			}
-			for (int j = y + 1; j < nBoardSize - 2 && board[j][x] == 2; j++) {//search for last another to down
+			for (int j = y + 1; j < nBoardSize && board[j][x] == 2; j++) {//search for last another to down
 				if (board[j + 1][x] == 0) {
 					board[j + 1][x] = 3;
 					break;
 				}
 			}
-			for (int j = y - 1; j > 2 && board[j][x] == 2; j--) {//search for last another to up
+			for (int j = y - 1; j > 0 && board[j][x] == 2; j--) {//search for last another to up
 				if (board[j - 1][x] == 0) {
 					board[j - 1][x] = 3;
 					break;
 				}
 			}
 
-			for (int i = 0; i + x + 1 < nBoardSize - 2 && i + y + 1 < nBoardSize - 2 && board[i + y + 1][i + x + 1] == 2; i++) {//search for last another to right-down
+			for (int i = 0; i + x + 1 < nBoardSize && i + y + 1 < nBoardSize && board[i + y + 1][i + x + 1] == 2; i++) {//search for last another to right-down
 				if (board[i + y + 2][i + x + 2] == 0) {
 					board[i + y + 2][i + x + 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; -i + x - 1 > 2 && i + y + 1 < nBoardSize - 2 && board[i + y + 1][-i + x - 1] == 2; i++) {//search for last another to left-down
+			for (int i = 0; -i + x - 1 > 0 && i + y + 1 < nBoardSize && board[i + y + 1][-i + x - 1] == 2; i++) {//search for last another to left-down
 				if (board[i + y + 2][-i + x - 2] == 0) {
 					board[i + y + 2][-i + x - 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; i + x - 1 > 2 && i + y - 1 > 2 && board[i + y - 1][i + x - 1] == 2; i--) {//search for last another to left-up
+			for (int i = 0; -i + x - 1 > 0 && -i + y - 1 > 0 && board[-i + y - 1][-i + x - 1] == 2; i++) {//search for last another to left-up
 				if (board[i + y - 2][i + x - 2] == 0) {
 					board[i + y - 2][i + x - 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; i + x + 1 < nBoardSize - 2 && -i + y - 1 > 2 && board[-i + y - 1][i + x + 1] == 2; i++) {//search for last another to left-up
+			for (int i = 0; i + x + 1 < nBoardSize && -i + y - 1 > 0 && board[-i + y - 1][i + x + 1] == 2; i++) {//search for last another to right-up
 				if (board[-i + y - 2][i + x + 2] == 0) {
 					board[-i + y - 2][i + x + 2] = 3;
 					break;
@@ -131,55 +184,61 @@ public:
 				}
 			}
 
-			for (int i = x + 1; i < nBoardSize - 2 && board[y][i] == 1; i++) {//search for last another to right
+			for (int i = x + 1; i < nBoardSize && board[y][i] == 1; i++) {//search for last another to right
 				if (board[y][i + 1] == 0) {
 					board[y][i + 1] = 3;
 					break;
 				}
 			}
-			for (int i = x - 1; i > 2 && board[y][i] == 1; i--) {//search for last another to left
+			for (int i = x - 1; i > 0 && board[y][i] == 1; i--) {//search for last another to left
 				if (board[y][i - 1] == 0) {
 					board[y][i - 1] = 3;
 					break;
 				}
 			}
-			for (int j = y + 1; j < nBoardSize - 2 && board[j][x] == 1; j++) {//search for last another to down
+			for (int j = y + 1; j < nBoardSize && board[j][x] == 1; j++) {//search for last another to down
 				if (board[j + 1][x] == 0) {
 					board[j + 1][x] = 3;
 					break;
 				}
 			}
-			for (int j = y - 1; j > 2 && board[j][x] == 1; j--) {//search for last another to up
+			for (int j = y - 1; j > 0 && board[j][x] == 1; j--) {//search for last another to up
 				if (board[j - 1][x] == 0) {
 					board[j - 1][x] = 3;
 					break;
 				}
 			}
 
-			for (int i = 0; i + x + 1 < nBoardSize - 2 && i + y + 1 < nBoardSize - 2 && board[i + y + 1][i + x + 1] == 1; i++) {//search for last another to right-down
+			for (int i = 0; i + x + 1 < nBoardSize && i + y + 1 < nBoardSize && board[i + y + 1][i + x + 1] == 1; i++) {//search for last another to right-down
 				if (board[i + y + 2][i + x + 2] == 0) {
 					board[i + y + 2][i + x + 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; -i + x - 1 > 2 && i + y + 1 < nBoardSize - 2 && board[i + y + 1][-i + x - 1] == 1; i++) {//search for last another to left-down
+			for (int i = 0; -i + x - 1 > 0 && i + y + 1 < nBoardSize && board[i + y + 1][-i + x - 1] == 1; i++) {//search for last another to left-down
 				if (board[i + y + 2][-i + x - 2] == 0) {
 					board[i + y + 2][-i + x - 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; i + x - 1 > 2 && i + y - 1 > 2 && board[i + y - 1][i + x - 1] == 1; i--) {//search for last another to left-up
-				if (board[i + y - 2][i + x - 2] == 0) {
-					board[i + y - 2][i + x - 2] = 3;
+			for (int i = 0; -i + x - 1 > 0 && -i + y - 1 > 0 && board[-i + y - 1][-i + x - 1] == 1; i++) {//search for last another to left-up
+				if (board[-i + y - 2][-i + x - 2] == 0) {
+					board[-i + y - 2][-i + x - 2] = 3;
 					break;
 				}
 			}
-			for (int i = 0; i + x + 1 < nBoardSize - 2 && -i + y - 1 > 2 && board[-i + y - 1][i + x + 1] == 1; i++) {//search for last another to left-up
+			for (int i = 0; i + x + 1 < nBoardSize && -i + y - 1 > 0 && board[-i + y - 1][i + x + 1] == 1; i++) {//search for last another to left-up
 				if (board[-i + y - 2][i + x + 2] == 0) {
 					board[-i + y - 2][i + x + 2] = 3;
 					break;
 				}
 			}
 		}
+
+		bool b = false;//check if can set unit
+		for (int j = 0; j < nBoardSize; j++) for (int i = 0; i < nBoardSize; i++) if (board[j][i] == 3) b = true;
+		if (!b && bTurn && !secondcheck) bTurn = false;
+		if (!b && !bTurn && !secondcheck) bTurn = true;
+		if (!b && !secondcheck) vCheckAvailablePlace(true);
 	}
 };
