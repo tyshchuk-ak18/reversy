@@ -24,10 +24,16 @@ public:
 	void vBoardReset() {//1-black; 2-white; 3-available to set
 		for (int i = 0; i < nBoardSize; i++) board[i] = new int[nBoardSize];
 		for (int j = 0; j < nBoardSize; j++) for (int i = 0; i < nBoardSize; i++) board[j][i] = 0;
-		board[3][3] = 1;
-		board[3][4] = 2;
+		//board[3][3] = 1;
+		//board[3][4] = 2;
+		//board[4][3] = 2;
+		//board[4][4] = 1;
+		board[4][4] = 2;
 		board[4][3] = 2;
-		board[4][4] = 1;
+		board[4][2] = 2;
+		board[3][4] = 1;
+		board[3][3] = 1;
+		board[3][2] = 1;
 		bTurn = true;
 		vCheckAvailablePlace(false);
 	}
@@ -53,18 +59,20 @@ public:
 	void vFlipUnits(int x, int y) {
 		if (bTurn) {
 			board[y][x] = 1;
-			if (board[y][x + 1] == 2 && x < nBoardSize - 2) {
+			//ray casts to right
+			if (board[y][x + 1] == 2 && x < nBoardSize - 2) {//check if next is another then go
 				for (int i1 = x + 1; i1 < nBoardSize; i1++) {
-					if (board[y][i1 + 1] == 1) {
-						for (int i2 = i1; i2 > x; i2--) board[y][i2] = 1;
-						break;
+					if (board[y][i1 + 1] == 1) {//search for last same
+						for (int i2 = i1; i2 > x; i2--) board[y][i2] = 1;//flip all another
+						break;//if last another is seeked then stop
 					}
-					if (board[y][i1 + 1] == 0 || board[y][i1 + 1] == 3) break;
+					if (board[y][i1 + 1] == 0 || board[y][i1 + 1] == 3) break;//if no neither same nor another then stop
 				}
 			}
-			if (board[y][x + 1] == 2 && x == nBoardSize - 2) {
+			if (board[y][x + 1] == 2 && x == nBoardSize - 2) {//for border flipping
 				if (board[y][x + 2] == 1) board[y][x + 1] = 1;
 			}
+			//ray casts to down
 			if (board[y + 1][x] == 2 && y < nBoardSize - 2) {
 				for (int i1 = y + 1; i1 < nBoardSize; i1++) {
 					if (board[i1 + 1][x] == 1) {
@@ -77,7 +85,54 @@ public:
 			if (board[y + 1][x] == 2 && y == nBoardSize - 2) {
 				if (board[y + 2][x] == 1) board[y + 1][x] = 1;
 			}
+			//ray casts to left
+			if (board[y][x - 1] == 2 && x > 2) {
+				for (int i1 = x - 1; i1 > 0; i1--) {
+					if (board[y][i1 - 1] == 1) {
+						for (int i2 = i1; i2 < x; i2++) board[y][i2] = 1;
+						break;
+					}
+					if (board[y][i1 - 1] == 0 || board[y][i1 - 1] == 3) break;
+				}
+			}
+			if (board[y][x - 1] == 2 && x == 2) {
+				if (board[y][x - 2] == 1) board[y][x - 1] = 1;
+			}
+			//ray casts to up
+			if (board[y - 1][x] == 2 && y > 2) {
+				for (int i1 = y - 1; i1 > 0; i1--) {
+					if (board[i1 - 1][x] == 1) {
+						for (int i2 = i1; i2 < y; i2++) board[i2][x] = 1;
+						break;
+					}
+					if (board[i1 - 1][x] == 0 || board[i1 - 1][x] == 3) break;
+				}
+			}
+			if (board[y - 1][x] == 2 && y == 2) {
+				if (board[y - 2][x] == 1) board[y - 1][x] = 1;
+			}
+			//ray casts to right down
+			if (board[y + 1][x + 1] == 2) {
+				for (int i1 = 0; i1 + y + 1 < nBoardSize && i1 + x + 1 < nBoardSize; i1++) {
+					if (board[i1 + y + 2][i1 + x + 2] == 1) {
+						for (int i2 = i1 + 1; i2 + y + 1 > y && i2 + x + 1 > x; i2--) board[i2 + y][i2 + x] = 1;
+						break;
+					}
+					if (board[i1 + y + 2][i1 + x + 2] == 0 || board[i1 + y + 2][i1 + x + 2] == 3) break;
+				}
+			}
+			//ray casts to left up
+			if (board[y - 1][x - 1] == 2) {
+				for (int i1 = 0; -i1 + y - 1 > 0 && -i1 + x - 1 > 0; i1++) {
+					if (board[-i1 + y - 2][-i1 + x - 2] == 1) {
+						for (int i2 = i1 + 1; -i2 + y - 1 < y && -i2 + x - 1 < x; i2--) board[-i2 + y][-i2 + x] = 1;
+						break;
+					}
+					if (board[-i1 + y - 2][-i1 + x - 2] == 0 || board[-i1 + y - 2][-i1 + x - 2] == 3) break;
+				}
+			}
 		}
+
 		if (!bTurn) {
 			board[y][x] = 2;
 			if (board[y][x + 1] == 1 && x < nBoardSize - 2) {
@@ -103,6 +158,30 @@ public:
 			}
 			if (board[y + 1][x] == 1 && y == nBoardSize - 2) {
 				if (board[y + 2][x] == 2) board[y + 1][x] = 2;
+			}
+			if (board[y][x - 1] == 1 && x > 2) {
+				for (int i1 = x - 1; i1 > 0; i1--) {
+					if (board[y][i1 - 1] == 2) {
+						for (int i2 = i1; i2 < x; i2++) board[y][i2] = 2;
+						break;
+					}
+					if (board[y][i1 - 1] == 0 || board[y][i1 - 1] == 3) break;
+				}
+			}
+			if (board[y][x - 1] == 1 && x == 2) {
+				if (board[y][x - 2] == 2) board[y][x - 1] = 2;
+			}
+			if (board[y - 1][x] == 1 && y > 2) {
+				for (int i1 = y - 1; i1 > 0; i1--) {
+					if (board[i1 - 1][x] == 2) {
+						for (int i2 = i1; i2 < y; i2++) board[i2][x] = 2;
+						break;
+					}
+					if (board[i1 - 1][x] == 0 || board[i1 - 1][x] == 3) break;
+				}
+			}
+			if (board[y - 1][x] == 1 && y == 2) {
+				if (board[y - 2][x] == 2) board[y - 1][x] = 2;
 			}
 		}
 	}
