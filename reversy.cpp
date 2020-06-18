@@ -60,7 +60,7 @@ int main() {
 	string sSettingsMenuButton = "Settings";
 	string sExitMenuButton = "Quit";
 	string sFirstLoad = "Press E";
-	string sScore = "Black  $White  ";
+	string sScore = "Black   White  ";
 
 	string sLogo1 = " $______$   $______$   $__$ $__$$______$   $______$   $______$   $__$$__$   ";
 	string sLogo2 = "$/1$$==$1$ $/1$$___1$ $/1$1$/$/$/1$$___1$ $/1$$==$1$ $/1$$___1$ $/1$1_1$1$  ";
@@ -104,7 +104,6 @@ int main() {
 				}
 				default: break;
 				}
-
 			}
 			if (GetAsyncKeyState(0x53) & 0x8000 && !bCheckKeyState) {//s
 				switch (nAction)
@@ -124,7 +123,6 @@ int main() {
 				}
 				default: break;
 				}
-				
 			}
 			if (GetAsyncKeyState(0x41) & 0x8000 && !bCheckKeyState) {//a
 				switch (nAction)
@@ -164,12 +162,15 @@ int main() {
 					}
 					break;
 				}
-				case 2: {//game starts
+				case 2: {//game in process
 					Board.SnBU(nSelectedBoardPos[0], nSelectedBoardPos[1]);
+					if (!Board.GbIP()) {
+						nAction = 3;
+					}
 					break;
 				}
-				case 3: {//game ends
-
+				case 3: {//game ended
+					
 					break;
 				}
 				case 4: {//settings menu
@@ -178,12 +179,16 @@ int main() {
 				}
 				default: break;//first load
 				}
-				
 			}
 			if (GetAsyncKeyState(0x51) & 0x8000 && !bCheckKeyState) {//q
 				switch (nAction)
 				{
 				case 2: {
+					nAction = 1;
+					Board.vClearMem();
+					break;
+				}
+				case 3: {
 					nAction = 1;
 					Board.vClearMem();
 					break;
@@ -216,20 +221,22 @@ int main() {
 					}
 
 					//borders
-					if (x == 0 && y == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(7);//main upper left
-					if (x == nScreenWidth - 1 && y == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(8);//main upper right
-					if (x == nScreenWidth - 1 && y == nScreenHeight - 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(9);//main lower right
-					if (x == 0 && y == nScreenHeight - 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(10);//main lower left
-					if (x == 1 && y == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//logo upper left
-					if (x == nScreenWidth - 2 && y == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);//logo upper right
-					if (x == nScreenWidth - 2 && y == 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);// logo lower right
-					if (x == 1 && y == 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);//logo lower left
-					if ((y == 0 || y == 9 || y == 39) && x > 0 && x < 79) screen[x + y * nScreenWidth] = CharSet.GsBorder(11);//main horizontal
-					if ((x == 0 || x == 79) && y > 0 && y < 39 && y != 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(12);//main vertical
-					if ((y == 1 || y == 8) && x > 1 && x < 78) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);//logo horizontal
-					if ((x == 1 || x == 78) && y > 1 && y < 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);//logo vertical
-					if (x == 0 && y == 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(16);//main left separator
-					if (x == nScreenWidth - 1 && y == 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(15);//main right separator
+					{
+						if (x == 0 && y == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(7);//main upper left
+						if (x == nScreenWidth - 1 && y == 0) screen[x + y * nScreenWidth] = CharSet.GsBorder(8);//main upper right
+						if (x == nScreenWidth - 1 && y == nScreenHeight - 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(9);//main lower right
+						if (x == 0 && y == nScreenHeight - 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(10);//main lower left
+						if (x == 1 && y == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);//logo upper left
+						if (x == nScreenWidth - 2 && y == 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);//logo upper right
+						if (x == nScreenWidth - 2 && y == 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);// logo lower right
+						if (x == 1 && y == 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);//logo lower left
+						if ((y == 0 || y == 9 || y == 39) && x > 0 && x < 79) screen[x + y * nScreenWidth] = CharSet.GsBorder(11);//main horizontal
+						if ((x == 0 || x == 79) && y > 0 && y < 39 && y != 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(12);//main vertical
+						if ((y == 1 || y == 8) && x > 1 && x < 78) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);//logo horizontal
+						if ((x == 1 || x == 78) && y > 1 && y < 8) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);//logo vertical
+						if (x == 0 && y == 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(16);//main left separator
+						if (x == nScreenWidth - 1 && y == 9) screen[x + y * nScreenWidth] = CharSet.GsBorder(15);//main right separator
+					}
 
 					//start menu button
 					if (x >= Setting.GnSMBPX() && x <= Setting.GnSMBPX() + Setting.GnSMBL()) if (y >= Setting.GnSMBPY() && y <= Setting.GnSMBPY() + 2) {
@@ -283,7 +290,7 @@ int main() {
 					}
 
 					//board
-					if (nAction == 2) if (x >= Setting.GnBPX() && x <= Setting.GnBPX() + Board.GnBS() * 2) if (y >= Setting.GnBPY() && y <= Setting.GnBPY() + Board.GnBS() * 2) {
+					if (nAction == 2 || nAction == 3) if (x >= Setting.GnBPX() && x <= Setting.GnBPX() + Board.GnBS() * 2) if (y >= Setting.GnBPY() && y <= Setting.GnBPY() + Board.GnBS() * 2) {
 						if (x == Setting.GnBPX() && y == Setting.GnBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
 						if (x == Setting.GnBPX() + Board.GnBS() * 2 && y == Setting.GnBPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
 						if (x == Setting.GnBPX() + Board.GnBS() * 2 && y == Setting.GnBPY() + Board.GnBS() * 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
@@ -299,17 +306,36 @@ int main() {
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 1) screen[x + y * nScreenWidth] = 1;
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 2) screen[x + y * nScreenWidth] = 2;
 						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && Board.GnBU((x - Setting.GnBPX()) / 2, (y - Setting.GnBPY()) / 2) == 3) screen[x + y * nScreenWidth] = 7;
-						if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && nSelectedBoardPos[0] == (x - Setting.GnBPX()) / 2 && nSelectedBoardPos[1] == (y - Setting.GnBPY()) / 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
+						if (nAction == 2) if ((x - Setting.GnBPX()) % 2 == 1 && (y - Setting.GnBPY()) % 2 == 1 && nSelectedBoardPos[0] == (x - Setting.GnBPX()) / 2 && nSelectedBoardPos[1] == (y - Setting.GnBPY()) / 2) screen[x + y * nScreenWidth] = CharSet.GsShade(4);
 					}
 
 					//score
-					if (nAction == 2) if (x >= Setting.GnSPX() && x <= Setting.GnSPX() + Setting.GnSL()) if (y >= Setting.GnSPY() && y <= Setting.GnSPY() + 2) {
-						if (x == Setting.GnSPX() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
-						if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
-						if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
-						if (x == Setting.GnSPX() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
-						if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
-						if ((x == Setting.GnSPX() || x == Setting.GnSPX() + Setting.GnSL()) && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+					if (nAction == 2 || nAction == 3) if (x >= Setting.GnSPX() && x <= Setting.GnSPX() + Setting.GnSL()) if (y >= Setting.GnSPY() && y <= Setting.GnSPY() + 2) {
+						if (Board.GbT()) {
+							if (x == Setting.GnSPX() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(7);
+							if (x == Setting.GnSPX() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(10);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(2);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(3);
+							if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() / 2 && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(11);
+							if (x > Setting.GnSPX() + Setting.GnSL() / 2 && x < Setting.GnSPX() + Setting.GnSL() && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+							if (x == Setting.GnSPX() && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(12);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+						}
+						else {
+							if (x == Setting.GnSPX() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(1);
+							if (x == Setting.GnSPX() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(4);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(8);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(9);
+							if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() / 2 && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(5);
+							if (x > Setting.GnSPX() + Setting.GnSL() / 2 && x < Setting.GnSPX() + Setting.GnSL() && (y == Setting.GnSPY() || y == Setting.GnSPY() + 2)) screen[x + y * nScreenWidth] = CharSet.GsBorder(11);
+							if (x == Setting.GnSPX() && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(6);
+							if (x == Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(12);
+						}
+						if (x == Setting.GnSPX() + Setting.GnSL() / 2) {
+							if (y == Setting.GnSPY()) screen[x + y * nScreenWidth] = CharSet.GsBorder(27);
+							if (y == Setting.GnSPY() + 1) screen[x + y * nScreenWidth] = CharSet.GsBorder(12);
+							if (y == Setting.GnSPY() + 2) screen[x + y * nScreenWidth] = CharSet.GsBorder(28);
+						}
 						if (x > Setting.GnSPX() && x < Setting.GnSPX() + Setting.GnSL() && y == Setting.GnSPY() + 1) if (sScore[x - Setting.GnSPX() - 1] != ' ') screen[x + y * nScreenWidth] = CharSet.GcLatin(sScore[x - Setting.GnSPX() - 1]);
 						if (y == Setting.GnSPY() + 1) {
 							if (x == Setting.GnSPX() + 6) screen[x + y * nScreenWidth] = (Board.GnBUA() - Board.GnBUA() % 10) / 10 + 48;
@@ -329,10 +355,9 @@ int main() {
 		else fFPSSync += fElapsedTime;
 
 		TCHAR title[MAX_PATH];
-		StringCchPrintf(title, MAX_PATH, TEXT("FPS = %3.2f | FPS_Max = %3.2f | FPS_Min = %3.2f | FPS_Sync=%3.2f | TEST = %1.0f"), 1.0f / fElapsedTime, 1.0f / fMinElapsedTime, 1.0f / fFPSCount, 1.0f / fMaxElapsedTime, (float)nShade);
+		StringCchPrintf(title, MAX_PATH, TEXT("FPS = %3.2f | FPS_Max = %3.2f | FPS_Min = %3.2f | FPS_Sync=%3.2f | TEST = %1.0f"), 1.0f / fElapsedTime, 1.0f / fMinElapsedTime, 1.0f / fFPSCount, 1.0f / fMaxElapsedTime);
 		SetConsoleTitle(title);
 	}
-	return 0;
 }
 
 /*
