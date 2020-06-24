@@ -4,7 +4,7 @@ private:
 	int nSettingsMenuButton[3] = { 2, 17, 9 };
 	int nExitMenuButton[3] = { 2, 22, 5 };
 	int nLogoPos[2] = { 2, 2 };
-	int nBoardPos[2] = { 60, 11 };
+	int nBoardPos[2] = { 60, 12 };
 	int nScorePos[3] = { 60, 29, 16 };
 
 	bool bEnableAnimation = false;

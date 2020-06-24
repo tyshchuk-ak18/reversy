@@ -61,6 +61,8 @@ int main() {
 	string sExitMenuButton = "Quit";
 	string sFirstLoad = "Press E";
 	string sScore = "Black   White  ";
+	string sHorizontalNumeration = " A B C D E F G H";
+	string sVerticalNumeration = " 1 2 3 4 5 6 7 8";
 
 	string sLogo1 = " $______$   $______$   $__$ $__$$______$   $______$   $______$   $__$$__$   ";
 	string sLogo2 = "$/1$$==$1$ $/1$$___1$ $/1$1$/$/$/1$$___1$ $/1$$==$1$ $/1$$___1$ $/1$1_1$1$  ";
@@ -343,6 +345,12 @@ int main() {
 							if (x == Setting.GnSPX() + 14) screen[x + y * nScreenWidth] = (Board.GnWUA() - Board.GnWUA() % 10) / 10 + 48;
 							if (x == Setting.GnSPX() + 15) screen[x + y * nScreenWidth] = Board.GnWUA() % 10 + 48;
 						}
+					}
+
+					//numeration
+					if (nAction == 2 || nAction == 3) {
+						if (x >= Setting.GnBPX() && x < Setting.GnBPX() + Board.GnBS() * 2 && y == Setting.GnBPY() - 1) if (sHorizontalNumeration[x - Setting.GnBPX()] != ' ') screen[x + y * nScreenWidth] = CharSet.GcLatin(sHorizontalNumeration[x - Setting.GnBPX()]);
+						if (x == Setting.GnBPX() - 1 && y >= Setting.GnBPY() && y < Setting.GnBPY() + Board.GnBS() * 2) if (sVerticalNumeration[y - Setting.GnBPY()] != ' ') screen[x + y * nScreenWidth] = CharSet.GcNumber(sVerticalNumeration[y - Setting.GnBPY()]);
 					}
 				}
 			}
