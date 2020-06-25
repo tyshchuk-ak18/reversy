@@ -31,10 +31,10 @@ public:
 	void vBoardReset() {//1-black; 2-white; 3-available to set
 		for (int i = 0; i < nBoardSize; i++) board[i] = new int[nBoardSize];
 		for (int j = 0; j < nBoardSize; j++) for (int i = 0; i < nBoardSize; i++) board[j][i] = 0;
-		board[3][3] = 1;
-		board[3][4] = 2;
-		board[4][3] = 2;
-		board[4][4] = 1;
+		board[3][3] = 2;
+		board[3][4] = 1;
+		board[4][3] = 1;
+		board[4][4] = 2;
 		bTurn = true;
 		vCheckAvailablePlace(false);
 	}

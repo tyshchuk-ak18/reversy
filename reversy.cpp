@@ -78,6 +78,10 @@ int main() {
 	//start parametres
 	screenfill();
 	startaction();
+
+	TCHAR title[MAX_PATH];
+	StringCchPrintf(title, MAX_PATH, TEXT("Reversy"));
+	SetConsoleTitle(title);
 	
 	while(1) {
 		tp2 = chrono::system_clock::now();
@@ -361,10 +365,6 @@ int main() {
 			fFPSSync = 0.0f;
 		}
 		else fFPSSync += fElapsedTime;
-
-		TCHAR title[MAX_PATH];
-		StringCchPrintf(title, MAX_PATH, TEXT("FPS = %3.2f | FPS_Max = %3.2f | FPS_Min = %3.2f | FPS_Sync=%3.2f | TEST = %1.0f"), 1.0f / fElapsedTime, 1.0f / fMinElapsedTime, 1.0f / fFPSCount, 1.0f / fMaxElapsedTime);
-		SetConsoleTitle(title);
 	}
 }
 
